@@ -4,21 +4,40 @@ import MessagesHeader from "../messages-header";
 import MessageForm from "../message-form";
 import Message from "../message";
 import { connect } from "react-redux";
-import { getMessagesAction } from "../../redux/message/messages.actions";
 
 class Messages extends React.Component {
+  state = {
+    rerender: 0,
+    messages: []
+  };
+
+  static getDerivedStateFromProps(props, state) {
+    if (props.messages.messages !== state.messages) {
+      return { messages: props.messages.messages };
+    } else {
+      return null;
+    }
+  }
   componentDidUpdate(prevProps) {
     const {
       messages: { messages }
     } = this.props;
     if (prevProps.messages.messages !== messages) {
-      this.renderMessages(messages);
+      this.updateRender();
     }
   }
+
+  updateRender = () => {
+    this.setState({
+      messages: this.props.messages.messages
+    });
+  };
+
   renderMessages = messages => {
-    if (messages.length) {
-      messages.map(message => {
-        console.log("HIIIII!!!: ", message);
+    let content;
+
+    if (messages.length > 0) {
+      content = messages.map(message => {
         return (
           <Message
             key={message.timestamp}
@@ -28,8 +47,9 @@ class Messages extends React.Component {
         );
       });
     } else {
-      return null;
+      content = <p>Hello</p>;
     }
+    return content;
   };
   render() {
     const { currentUser, channels, messages } = this.props;
@@ -39,7 +59,11 @@ class Messages extends React.Component {
         <MessagesHeader />
         <Segment>
           <Comment.Group className="messages">
-            {this.renderMessages(messages.messages)}
+            {this.state.messages ? (
+              this.renderMessages(messages.messages)
+            ) : (
+              <p>Loading...</p>
+            )}
           </Comment.Group>
         </Segment>
         <MessageForm
