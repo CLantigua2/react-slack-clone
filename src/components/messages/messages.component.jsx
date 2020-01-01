@@ -7,12 +7,18 @@ import { connect } from "react-redux";
 import { getMessagesAction } from "../../redux/message/messages.actions";
 
 class Messages extends React.Component {
+  componentDidUpdate(prevProps) {
+    const {
+      messages: { messages }
+    } = this.props;
+    if (prevProps.messages.messages !== messages) {
+      this.renderMessages(messages);
+    }
+  }
   renderMessages = messages => {
-    console.log("MESSAGES: ", messages);
-
-    let content;
-    if (messages) {
-      content = messages.map(message => {
+    if (messages.length) {
+      messages.map(message => {
+        console.log("HIIIII!!!: ", message);
         return (
           <Message
             key={message.timestamp}
@@ -22,10 +28,8 @@ class Messages extends React.Component {
         );
       });
     } else {
-      content = null;
+      return null;
     }
-    console.log("CONTENT: ", content);
-    return content;
   };
   render() {
     const { currentUser, channels, messages } = this.props;
@@ -35,8 +39,7 @@ class Messages extends React.Component {
         <MessagesHeader />
         <Segment>
           <Comment.Group className="messages">
-            {messages.messages.length > 0 &&
-              this.renderMessages(messages.messages)}
+            {this.renderMessages(messages.messages)}
           </Comment.Group>
         </Segment>
         <MessageForm
