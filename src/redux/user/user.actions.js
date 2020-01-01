@@ -36,7 +36,6 @@ export const fetchCurrentUser = (dispatch, history) => {
       } else {
         // handles when there is no user to get back (logged out)
         dispatch({ type: FETCH_CURRENT_USER_SUCCESS, payload: null });
-        history.push("/");
       }
     });
   return unsubscribeFromAuth();
