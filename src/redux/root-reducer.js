@@ -10,7 +10,7 @@ import { errorReducer } from "./errors/errors.reducer";
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: ["user", "channel", "messages"]
+  whitelist: ["user"]
 };
 
 const reducers = combineReducers({

@@ -6,6 +6,7 @@ import {
   getIndividualChannel
 } from "../../redux/channel/channel.actions";
 import { getMessagesAction } from "../../redux/message/messages.actions";
+import { createLoadingSelector } from "../../redux/selectors";
 
 class Channels extends React.Component {
   state = {
@@ -18,12 +19,6 @@ class Channels extends React.Component {
 
   componentDidMount() {
     this.setFirstChannel();
-  }
-
-  componentDidUpdate(prevProps, nextState) {
-    if (this.state.activeChannel !== nextState.activeChannel) {
-      this.props.getMessagesAction(this.state.activeChannel);
-    }
   }
 
   setFirstChannel = () => {
@@ -152,7 +147,12 @@ class Channels extends React.Component {
   }
 }
 
-export default connect(null, {
+const loading = createLoadingSelector(["GET_CHANNEL", "GET_MESSAGES"]);
+
+const mapStateToProps = state => ({
+  loading: loading(state)
+});
+export default connect(mapStateToProps, {
   addChannelAction,
   getIndividualChannel,
   getMessagesAction

@@ -9,6 +9,7 @@ import {
 import { getRequest, postRequest } from "../utils/request.utils";
 
 export const getMessagesAction = channelId => async dispatch => {
+  console.log("CHANNEL ID: ", channelId);
   await getRequest(
     {
       types: {

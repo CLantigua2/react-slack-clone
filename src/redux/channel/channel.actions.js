@@ -8,6 +8,7 @@ import {
   GET_INDIVIDUAL_CHANNEL
 } from "./channel.types";
 import { postRequest, getRequest } from "../utils/request.utils";
+import { getMessagesAction } from "../message/messages.actions";
 
 export const addChannelAction = channelData => async dispatch => {
   postRequest(
@@ -38,8 +39,11 @@ export const getAllChannels = async dispatch => {
   );
 };
 
-export const getIndividualChannel = individualChannel => dispatch =>
+export const getIndividualChannel = individualChannel => dispatch => {
   dispatch({
     type: GET_INDIVIDUAL_CHANNEL,
     payload: individualChannel
   });
+
+  getMessagesAction(individualChannel.id)(dispatch);
+};

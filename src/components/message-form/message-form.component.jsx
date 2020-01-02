@@ -3,23 +3,16 @@ import { Segment, Input, Button } from "semantic-ui-react";
 import { connect } from "react-redux";
 import { addMessageAction } from "../../redux/message/messages.actions";
 import { timestamp } from "../../firebase/firebase.utils";
+import {
+  createLoadingSelector,
+  createErrorMessageSelector
+} from "../../redux/selectors";
 
 class MessageForm extends React.Component {
   state = {
     message: "",
-    loading: false,
     errors: []
   };
-
-  componentDidUpdate(prevProps) {
-    const { messages } = this.props;
-    if (
-      prevProps.messages.messages_adding_loading !==
-      messages.messages_adding_loading
-    ) {
-      this.setState({ loading: messages.messages_adding_loading });
-    }
-  }
 
   handleChange = e => {
     this.setState({ [e.target.name]: e.target.value });
@@ -27,7 +20,7 @@ class MessageForm extends React.Component {
 
   sendMessage = e => {
     e.preventDefault();
-    const { channels, currentUser, messages } = this.props;
+    const { channels, currentUser, loading } = this.props;
     const { message, errors } = this.state;
     if (message) {
       // send message
@@ -41,11 +34,8 @@ class MessageForm extends React.Component {
         }
       };
       this.props.addMessageAction(channels.individual_channel.id, newMessage);
-      setInterval(() => {
-        if (
-          !messages.messages_adding_loading &&
-          !messages.messages_adding_error.length
-        ) {
+      setTimeout(() => {
+        if (!loading && !errors.length) {
           this.setState({ message: "" });
         }
       }, 500);
@@ -93,4 +83,11 @@ class MessageForm extends React.Component {
   }
 }
 
-export default connect(null, { addMessageAction })(MessageForm);
+const loading = createLoadingSelector(["ADD_MESSAGE"]);
+const errors = createErrorMessageSelector(["ADD_MESSAGE"]);
+const mapStateToProps = state => ({
+  loading: loading(state),
+  errors: errors(state)
+});
+
+export default connect(mapStateToProps, { addMessageAction })(MessageForm);

@@ -2,17 +2,14 @@ import { database } from "../../firebase/firebase.utils";
 
 export const getRequest = async (options, dispatch) => {
   const { types, refLocation, childId } = options;
+  // debugger;
   dispatch({ type: types.start });
   try {
     const temp = [];
     let ref;
     switch (refLocation) {
       case "messages":
-        if (childId) {
-          ref = await database.ref(refLocation).child(childId);
-        } else {
-          ref = await database.ref(refLocation);
-        }
+        ref = await database.ref(refLocation).child(childId);
         break;
       case "channels":
         ref = await database.ref(refLocation);
@@ -41,8 +38,6 @@ export const postRequest = async (options, dispatch) => {
     switch (refLocation) {
       case "messages":
         ref = await database.ref(refLocation).child(childId);
-        key = await ref.push().key;
-        await Object.assign(postObj, { id: key });
         await ref.push().set(postObj);
         break;
       case "channels":
