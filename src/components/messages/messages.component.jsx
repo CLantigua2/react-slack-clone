@@ -38,9 +38,9 @@ class Messages extends React.Component {
     }
   }
 
-  componentWillUnmount() {
-    return this.clearTimeout();
-  }
+  // componentWillUnmount() {
+  //   return this.clearTimeout();
+  // }
 
   renderMessages = messages => {
     // console.log("MESSAGES: ", messages);
