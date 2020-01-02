@@ -14,6 +14,15 @@ class Messages extends React.Component {
     messages: []
   };
 
+  renderListestener = () => {
+    setTimeout(() => {
+      this.setState(prev => ({ rerender: prev.rerender + 1 }));
+    }, 500);
+  };
+  componentDidMount() {
+    this.renderListestener();
+  }
+
   componentDidUpdate(prevProps, prevState) {
     if (prevProps.loading !== this.props.loading) {
       console.log("TRUE 19");
@@ -29,12 +38,15 @@ class Messages extends React.Component {
     }
   }
 
+  componentWillUnmount() {
+    return this.clearTimeout();
+  }
+
   renderMessages = messages => {
     // console.log("MESSAGES: ", messages);
     let content;
-    if (messages.length) {
+    if (messages.length > 0) {
       content = messages.map(message => {
-        console.log("BRUHHHHHH: ");
         return (
           <Message
             rerender={this.state.rerender}
@@ -44,7 +56,9 @@ class Messages extends React.Component {
           />
         );
       });
-    } else {
+    } else if (messages.length === 0) {
+      content = <p>No comments</p>;
+    } else if (this.props.loading) {
       content = <WithSpinner />;
     }
     return content;
