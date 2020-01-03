@@ -6,6 +6,7 @@ import { channelReducer } from "./channel/channel.reducer";
 import { messagesReducer } from "./message/messages.reducer";
 import { loadingReducer } from "./loading/loading.reducer";
 import { errorReducer } from "./errors/errors.reducer";
+import { progressReducer } from "./progress/progress.reducer";
 
 const persistConfig = {
   key: "root",
@@ -18,7 +19,8 @@ const reducers = combineReducers({
   channel: channelReducer,
   messages: messagesReducer,
   loading: loadingReducer,
-  errors: errorReducer
+  errors: errorReducer,
+  progress: progressReducer
 });
 
 export const rootReducer = persistReducer(persistConfig, reducers);
