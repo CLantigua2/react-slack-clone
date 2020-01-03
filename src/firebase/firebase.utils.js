@@ -48,4 +48,5 @@ firebase.analytics();
 export const auth = firebase.auth();
 export const database = firebase.database();
 export const firestore = firebase.firestore();
+export const storage = firebase.storage();
 export const timestamp = firebase.database.ServerValue.TIMESTAMP;

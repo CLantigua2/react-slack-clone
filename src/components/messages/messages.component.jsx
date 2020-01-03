@@ -14,14 +14,26 @@ class Messages extends React.Component {
     messages: []
   };
 
-  renderListestener = () => {
-    setTimeout(() => {
+  componentDidMount() {
+    this.setTimer();
+  }
+
+  setTimer = () => {
+    if (this.timerHandle) {
+      return;
+    }
+    this.timerHandle = setTimeout(() => {
       this.setState(prev => ({ rerender: prev.rerender + 1 }));
+      this.timerHandle = 0;
     }, 500);
   };
-  componentDidMount() {
-    this.renderListestener();
-  }
+
+  clearTimer = () => {
+    if (this.timerHandle) {
+      clearTimeout(this.timerHandle);
+      this.timerHandle = 0;
+    }
+  };
 
   componentDidUpdate(prevProps, prevState) {
     if (prevProps.loading !== this.props.loading) {
@@ -38,9 +50,9 @@ class Messages extends React.Component {
     }
   }
 
-  // componentWillUnmount() {
-  //   return this.clearTimeout();
-  // }
+  componentWillUnmount() {
+    this.clearTimer();
+  }
 
   renderMessages = messages => {
     // console.log("MESSAGES: ", messages);
