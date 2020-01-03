@@ -1,28 +1,32 @@
 import { database } from "../../firebase/firebase.utils";
 
-export const getRequest = async (options, dispatch) => {
+export const getRequest = (options, dispatch) => {
   const { types, refLocation, childId } = options;
   // debugger;
-  dispatch({ type: types.start });
+  dispatch({ type: types.start }); // do we need this? - Sam
+
   try {
-    const temp = [];
     let ref;
-    switch (refLocation) {
-      case "messages":
-        ref = await database.ref(refLocation).child(childId);
-        break;
-      case "channels":
-        ref = await database.ref(refLocation);
-        break;
-      default:
-        break;
+
+    if (refLocation === "messages") {
+      ref = database.ref(refLocation).child(childId);
+    } else if (refLocation === "channels") {
+      ref = database.ref(refLocation);
     }
-    await ref.on("child_added", async snapShot => {
-      temp.push(snapShot.val());
-    });
-    await dispatch({
-      type: types.success,
-      payload: temp
+
+    ref.on("value", dataSnapShot => {
+      let values = [];
+
+      // Redundant to call val twice, but when you click on the welp channel,
+      // the app breaks. We cannot use Object.values on something that returns null - Sam
+      if (dataSnapShot.val() !== null) {
+        values = Object.values(dataSnapShot.val());
+      }
+
+      dispatch({
+        type: types.success,
+        payload: values
+      });
     });
   } catch (err) {
     dispatch({ type: types.failure, payload: err.message });
